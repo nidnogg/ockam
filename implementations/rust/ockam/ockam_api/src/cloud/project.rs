@@ -369,7 +369,6 @@ mod node {
             let req_builder = Request::post(format!("/v0/{space_id}")).body(&req_body);
             let cli_state = cli_state::CliState::new()?;
 
-            // Move this ident logic from req_body to req_wrapper
             let ident = {
                 let inner = self.get().read().await;
                 match &req_wrapper.identity_name {
