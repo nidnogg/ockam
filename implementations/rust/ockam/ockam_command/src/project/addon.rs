@@ -321,7 +321,7 @@ async fn run_impl(
                     let addon_id = "okta";
                     let endpoint = format!("{}/{}", base_endpoint(&project_name)?, addon_id);
                     let req = Request::put(endpoint)
-                        .body(CloudRequestWrapper::new(body, controller_route));
+                        .body(CloudRequestWrapper::new(body, controller_route, None));
                     rpc.request(req).await?;
                     rpc.is_ok()?;
                     println!("Okta addon enabled");
@@ -378,7 +378,7 @@ async fn run_impl(
                     let add_on_id = "influxdb_token_lease_manager";
                     let endpoint = format!("{}/{}", base_endpoint(&project_name)?, add_on_id);
                     let req = Request::put(endpoint)
-                        .body(CloudRequestWrapper::new(body, controller_route));
+                        .body(CloudRequestWrapper::new(body, controller_route, None));
 
                     rpc.request(req).await?;
                     rpc.is_ok()?;
@@ -425,7 +425,7 @@ async fn run_impl(
                     let addon_id = "confluent";
                     let endpoint = format!("{}/{}", base_endpoint(&project_name)?, addon_id);
                     let req = Request::put(endpoint)
-                        .body(CloudRequestWrapper::new(body, controller_route));
+                        .body(CloudRequestWrapper::new(body, controller_route, None));
                     rpc.request(req).await?;
                     rpc.is_ok()?;
                     println!("Confluent addon enabled");

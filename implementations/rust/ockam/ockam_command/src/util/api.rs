@@ -191,7 +191,7 @@ pub(crate) mod enroll {
     ) -> RequestBuilder<CloudRequestWrapper<AuthenticateAuth0Token>> {
         let token = AuthenticateAuth0Token::new(token);
         Request::post("v0/enroll/auth0")
-            .body(CloudRequestWrapper::new(token, &cmd.cloud_opts.route()))
+            .body(CloudRequestWrapper::new(token, &cmd.cloud_opts.route(), None))
     }
 }
 
@@ -205,7 +205,7 @@ pub(crate) mod space {
 
     pub(crate) fn create(cmd: &CreateCommand) -> RequestBuilder<CloudRequestWrapper<CreateSpace>> {
         let b = CreateSpace::new(&cmd.name, &cmd.admins);
-        Request::post("v0/spaces").body(CloudRequestWrapper::new(b, &cmd.cloud_opts.route()))
+        Request::post("v0/spaces").body(CloudRequestWrapper::new(b, &cmd.cloud_opts.route(), None))
     }
 
     pub(crate) fn list(cloud_route: &MultiAddr) -> RequestBuilder<BareCloudRequestWrapper> {
@@ -240,17 +240,15 @@ pub(crate) mod project {
         space_id: &'a str,
         enforce_credentials: Option<bool>,
         cloud_route: &'a MultiAddr,
-        identity_name: Option<&'a str>,
     ) -> RequestBuilder<'a, CloudRequestWrapper<'a, CreateProject<'a>>> {
         let b = CreateProject::new::<&str, &str>(
             project_name,
             enforce_credentials,
             &[],
             &[],
-            identity_name,
         );
         Request::post(format!("v0/projects/{}", space_id))
-            .body(CloudRequestWrapper::new(b, cloud_route))
+            .body(CloudRequestWrapper::new(b, cloud_route, None))
     }
 
     pub(crate) fn list(cloud_route: &MultiAddr) -> RequestBuilder<BareCloudRequestWrapper> {
@@ -278,7 +276,7 @@ pub(crate) mod project {
     ) -> RequestBuilder<CloudRequestWrapper<AddEnroller>> {
         let b = AddEnroller::new(&cmd.enroller_identity_id, cmd.description.as_deref());
         Request::post(format!("v0/project-enrollers/{}", cmd.project_id))
-            .body(CloudRequestWrapper::new(b, &cmd.cloud_opts.route()))
+            .body(CloudRequestWrapper::new(b, &cmd.cloud_opts.route(), None))
     }
 
     pub(crate) fn list_enrollers(

@@ -153,7 +153,7 @@ async fn run_impl(
                 std::fs::read_to_string(&json).context(format!("failed to read {:?}", &json))?;
             let b = ActivateSubscription::existing(space, json);
             let req =
-                Request::post("subscription").body(CloudRequestWrapper::new(b, controller_route));
+                Request::post("subscription").body(CloudRequestWrapper::new(b, controller_route, None));
             rpc.request(req).await?;
             rpc.parse_and_print_response::<Subscription>()?;
         }
@@ -202,7 +202,7 @@ async fn run_impl(
                     .await?;
                     let req =
                         Request::put(format!("subscription/{}/contact_info", subscription_id))
-                            .body(CloudRequestWrapper::new(json, controller_route));
+                            .body(CloudRequestWrapper::new(json, controller_route, None));
                     rpc.request(req).await?;
                     rpc.parse_and_print_response::<Subscription>()?;
                 }
@@ -221,7 +221,7 @@ async fn run_impl(
                     )
                     .await?;
                     let req = Request::put(format!("subscription/{}/space_id", subscription_id))
-                        .body(CloudRequestWrapper::new(new_space_id, controller_route));
+                        .body(CloudRequestWrapper::new(new_space_id, controller_route, None));
                     rpc.request(req).await?;
                     rpc.parse_and_print_response::<Subscription>()?;
                 }
