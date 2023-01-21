@@ -63,7 +63,7 @@ impl<'a> BareCloudRequestWrapper<'a> {
         Self {
             req: (),
             route: route.to_string().into(),
-            identity_name: None
+            identity_name: None,
         }
     }
 }

@@ -19,7 +19,7 @@ use ockam_api::cloud::{BareCloudRequestWrapper, CloudRequestWrapper};
 use ockam_api::nodes::*;
 use ockam_core::api::RequestBuilder;
 use ockam_core::api::{Request, Response};
-use ockam_core::Address;
+use ockam_core::{Address, CowStr};
 use ockam_multiaddr::MultiAddr;
 
 use crate::util::DEFAULT_CONTROLLER_ADDRESS;
@@ -190,8 +190,11 @@ pub(crate) mod enroll {
         token: Auth0Token,
     ) -> RequestBuilder<CloudRequestWrapper<AuthenticateAuth0Token>> {
         let token = AuthenticateAuth0Token::new(token);
-        Request::post("v0/enroll/auth0")
-            .body(CloudRequestWrapper::new(token, &cmd.cloud_opts.route(), None))
+        Request::post("v0/enroll/auth0").body(CloudRequestWrapper::new(
+            token,
+            &cmd.cloud_opts.route(),
+            None::<CowStr>,
+        ))
     }
 }
 
@@ -205,7 +208,11 @@ pub(crate) mod space {
 
     pub(crate) fn create(cmd: &CreateCommand) -> RequestBuilder<CloudRequestWrapper<CreateSpace>> {
         let b = CreateSpace::new(&cmd.name, &cmd.admins);
-        Request::post("v0/spaces").body(CloudRequestWrapper::new(b, &cmd.cloud_opts.route(), None))
+        Request::post("v0/spaces").body(CloudRequestWrapper::new(
+            b,
+            &cmd.cloud_opts.route(),
+            None::<CowStr>,
+        ))
     }
 
     pub(crate) fn list(cloud_route: &MultiAddr) -> RequestBuilder<BareCloudRequestWrapper> {
@@ -241,14 +248,12 @@ pub(crate) mod project {
         enforce_credentials: Option<bool>,
         cloud_route: &'a MultiAddr,
     ) -> RequestBuilder<'a, CloudRequestWrapper<'a, CreateProject<'a>>> {
-        let b = CreateProject::new::<&str, &str>(
-            project_name,
-            enforce_credentials,
-            &[],
-            &[],
-        );
-        Request::post(format!("v0/projects/{}", space_id))
-            .body(CloudRequestWrapper::new(b, cloud_route, None))
+        let b = CreateProject::new::<&str, &str>(project_name, enforce_credentials, &[], &[]);
+        Request::post(format!("v0/projects/{}", space_id)).body(CloudRequestWrapper::new(
+            b,
+            cloud_route,
+            None::<CowStr>,
+        ))
     }
 
     pub(crate) fn list(cloud_route: &MultiAddr) -> RequestBuilder<BareCloudRequestWrapper> {
@@ -275,8 +280,9 @@ pub(crate) mod project {
         cmd: &AddEnrollerCommand,
     ) -> RequestBuilder<CloudRequestWrapper<AddEnroller>> {
         let b = AddEnroller::new(&cmd.enroller_identity_id, cmd.description.as_deref());
-        Request::post(format!("v0/project-enrollers/{}", cmd.project_id))
-            .body(CloudRequestWrapper::new(b, &cmd.cloud_opts.route(), None))
+        Request::post(format!("v0/project-enrollers/{}", cmd.project_id)).body(
+            CloudRequestWrapper::new(b, &cmd.cloud_opts.route(), None::<CowStr>),
+        )
     }
 
     pub(crate) fn list_enrollers(
